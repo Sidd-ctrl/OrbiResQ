@@ -232,6 +232,13 @@ class PaginatedCameras(BaseModel):
     page_size: int
 
 
+class PaginatedNotifications(BaseModel):
+    items: list[NotificationOut]
+    total: int
+    page: int
+    page_size: int
+
+
 class DatasetCreate(BaseModel):
     name: str = Field(min_length=2, max_length=200)
     category: str = Field(default="road_hazard", max_length=48)
