@@ -1,5 +1,5 @@
-from ..models import Camera, Incident
-from ..schemas import CameraOut, IncidentOut
+from .models import Camera, Incident
+from .schemas import CameraOut, IncidentOut
 
 
 def camera_out(camera: Camera, distance_km: float | None = None, incident_count: int = 0) -> CameraOut:
