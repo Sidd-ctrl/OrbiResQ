@@ -1,0 +1,14 @@
+{
+  "name": "orbi-resq",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ORBI RESQ - Global Road Intelligence and Emergency Detection System",
+  "scripts": {
+    "build": "npm --prefix client install --no-audit --no-fund && npm --prefix client run build",
+    "start": "bash scripts/start.sh",
+    "dev:api": "python3 -m uvicorn server.app.main:app --reload --port 8000",
+    "dev:cv": "python3 -m uvicorn cv_service.app:app --reload --port 8100",
+    "dev:web": "npm --prefix client run dev",
+    "test": "python3 -m pytest tests -q"
+  }
+}
