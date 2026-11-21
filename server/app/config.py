@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     data_dir: str = str(DATA_DIR)
 
     cv_service_url: str = "http://127.0.0.1:8100"
+    media_gateway_url: str = ""
     http_timeout_seconds: float = 8.0
     geocode_user_agent: str = "ORBI-RESQ/1.0 (road intelligence platform)"
     geocode_language: str = "en"
