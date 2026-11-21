@@ -734,7 +734,7 @@ export default function DatasetsPage() {
                       </td>
                       <td>{detector.task}</td>
                       <td>
-                        <StatusPill value={detector.state.toUpperCase()} />
+                        <StatusPill value={detector.state === 'ready' ? 'OK' : detector.state.toUpperCase()} />
                       </td>
                       <td className="muted small">{detector.detail}</td>
                     </tr>
