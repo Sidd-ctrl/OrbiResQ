@@ -103,10 +103,11 @@ export default function DatasetsPage() {
     setError(null)
     setMessage(null)
     try {
+      const description = datasetForm.description.trim()
       const created = await api.createDataset({
         name: datasetForm.name.trim(),
         category: datasetForm.category,
-        description: datasetForm.description.trim() || null,
+        ...(description ? { description } : {}),
       })
       setDatasetForm({ name: '', category: 'road_hazard', description: '' })
       setMessage(`Dataset "${created.name}" created.`)
@@ -127,13 +128,16 @@ export default function DatasetsPage() {
     setError(null)
     setMessage(null)
     try {
-      const result = await api.importFiles({
-        dataset_id: importForm.dataset_id || null,
-        dataset_name: importForm.dataset_name.trim() || null,
-        category: importForm.category,
-        metadata: importForm.metadata.trim() || null,
-        files: importFiles,
-      })
+      const form = new FormData()
+      if (importForm.dataset_id) {
+        form.append('dataset_id', importForm.dataset_id)
+      } else if (importForm.dataset_name.trim()) {
+        form.append('dataset_name', importForm.dataset_name.trim())
+      }
+      form.append('category', importForm.category)
+      if (importForm.metadata.trim()) form.append('metadata', importForm.metadata.trim())
+      for (const file of importFiles) form.append('files', file)
+      const result = await api.importFiles(form)
       setImportFiles([])
       if (fileInput.current) fileInput.current.value = ''
       setMessage(`Imported files into "${result.name}".`)
@@ -419,7 +423,7 @@ export default function DatasetsPage() {
                         <td style={{ textTransform: 'capitalize' }}>{dataset.category.replace(/_/g, ' ')}</td>
                         <td>{dataset.storage_backend}</td>
                         <td className="mono">{dataset.file_count ?? 0}</td>
-                        <td className="mono">{formatBytes(dataset.total_bytes ?? 0)}</td>
+                        <td className="mono">{formatBytes(dataset.size_bytes ?? 0)}</td>
                         <td>
                           <StatusPill value={(dataset.processing_status || 'ready').toUpperCase()} />
                         </td>
@@ -475,7 +479,7 @@ export default function DatasetsPage() {
                           <td>{item.media_type}</td>
                           <td className="mono">{formatBytes(item.size_bytes)}</td>
                           <td>
-                            <StatusPill value={(item.processing_status || 'ready').toUpperCase()} />
+                            <StatusPill value={(item.status || 'ready').toUpperCase()} />
                           </td>
                           <td className="mono">{new Date(item.created_at).toLocaleString()}</td>
                         </tr>
@@ -730,7 +734,7 @@ export default function DatasetsPage() {
                       </td>
                       <td>{detector.task}</td>
                       <td>
-                        <StatusPill value={detector.available ? 'OK' : 'NOT_CONFIGURED'} />
+                        <StatusPill value={detector.state.toUpperCase()} />
                       </td>
                       <td className="muted small">{detector.detail}</td>
                     </tr>
