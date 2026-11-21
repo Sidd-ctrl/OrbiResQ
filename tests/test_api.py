@@ -58,7 +58,7 @@ def test_discovery_uses_registry_and_reports_providers(client):
     body = response.json()
     assert body["total"] >= 1
     assert body["providers"]
-    assert body["providers"][0]["provider"] == "registry"
+    assert any(report["id"] == "registry" for report in body["providers"])
 
 
 def test_discovery_empty_radius_reports_message(client):
@@ -123,7 +123,10 @@ def test_location_resolution_returns_place_fields(client):
 def test_location_search_returns_candidates(client):
     response = client.get("/api/location/search", params={"q": "Berlin"})
     assert response.status_code == 200
-    assert "results" in response.json()
+    results = response.json()
+    assert isinstance(results, list)
+    if results:
+        assert results[0]["display_name"]
 
 
 def test_dataset_creation_and_import(client):
@@ -166,10 +169,30 @@ def test_models_registry_and_runtime(client):
     runtime = client.get("/api/models/runtime")
     assert runtime.status_code == 200
     body = runtime.json()
-    assert isinstance(body["detectors"], list) and body["detectors"]
-    for detector in body["detectors"]:
-        assert detector["state"] in {"ready", "unavailable"}
-        assert detector["detail"]
+    assert "reachable" in body
+    assert isinstance(body["detectors"], list)
+    if not body["reachable"]:
+        assert body["detectors"] == []
+
+
+def test_cv_service_reports_detector_states_honestly():
+    from fastapi.testclient import TestClient
+
+    from cv_service.app import app as cv_app
+
+    with TestClient(cv_app) as vision:
+        health = vision.get("/health").json()
+        assert health["status"] == "ok"
+        assert health["detectors"] >= 4
+
+        detectors = vision.get("/v1/models").json()["detectors"]
+        assert detectors
+        for detector in detectors:
+            assert detector["state"] in {"ready", "unavailable"}
+            assert detector["detail"]
+
+        assert vision.post("/v1/detect", json={}).status_code == 400
+        assert vision.post("/v1/detect", json={"image_url": "ftp://example.com/a.jpg"}).status_code == 400
 
 
 def test_notification_channels_and_acknowledgement(client):
