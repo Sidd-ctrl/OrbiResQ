@@ -1,22 +1,42 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell'
+import { IntelProvider } from './intel'
 import DatasetsPage from './pages/DatasetsPage'
-import HomePage from './pages/HomePage'
 import IncidentsPage from './pages/IncidentsPage'
-import MonitoringPage from './pages/MonitoringPage'
 import SystemPage from './pages/SystemPage'
+import WorkspacePage from './pages/WorkspacePage'
 
 export default function App() {
   return (
-    <AppShell>
+    <IntelProvider>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/monitoring" element={<MonitoringPage />} />
-        <Route path="/incidents" element={<IncidentsPage />} />
-        <Route path="/datasets" element={<DatasetsPage />} />
-        <Route path="/system" element={<SystemPage />} />
+        <Route path="/" element={<WorkspacePage />} />
+        <Route
+          path="/incidents"
+          element={
+            <AppShell>
+              <IncidentsPage />
+            </AppShell>
+          }
+        />
+        <Route
+          path="/datasets"
+          element={
+            <AppShell>
+              <DatasetsPage />
+            </AppShell>
+          }
+        />
+        <Route
+          path="/system"
+          element={
+            <AppShell>
+              <SystemPage />
+            </AppShell>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </AppShell>
+    </IntelProvider>
   )
 }
