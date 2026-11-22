@@ -114,8 +114,8 @@ export function IntelProvider({ children }: { children: ReactNode }) {
   const refresh = useCallback(async () => {
     setLoading(true)
     const results = await Promise.allSettled([
-      api.cameras({ page_size: 500 }),
-      api.incidents({ page_size: 200 }),
+      api.cameras({ page_size: 200 }),
+      api.incidents({ page_size: 100 }),
       api.incidentSummary(),
       api.environment(),
     ])

@@ -119,7 +119,7 @@ export default function LayerPanel({ collapsed, onToggleCollapse }: Props) {
                     <li key={layer.id} className={layer.unavailable ? 'unavailable' : ''}>
                       <div className="layer-copy">
                         <span className="layer-name">{layer.label}</span>
-                        <span className="layer-detail">{layer.detail}</span>
+                        <span className="layer-note">{layer.detail}</span>
                         <span className="layer-source mono">
                           {layer.source}
                           {layer.unavailable ? '' : ` · ${counts[layer.id] ?? 0}`}

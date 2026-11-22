@@ -1336,32 +1336,25 @@ img {
   padding-bottom: 6px;
 }
 
-.layer-list li {
-  padding: 0 6px;
+.layer-note {
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--muted-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.layer-detail {
+.layer-list li.unavailable {
+  opacity: 0.62;
+}
+
+.layer-list li {
   display: flex;
   align-items: center;
-  gap: 7px;
-  width: 100%;
-  padding: 5px 6px;
-  border-radius: 2px;
-  text-align: left;
-  border: 1px solid transparent;
-}
-
-.layer-detail:hover {
-  background: rgba(255, 255, 255, 0.035);
-}
-
-.layer-detail.on {
-  border-color: rgba(200, 160, 97, 0.16);
-  background: rgba(200, 160, 97, 0.05);
-}
-
-.layer-detail.unavailable {
-  opacity: 0.55;
+  gap: 8px;
+  padding: 3px 0;
 }
 
 .layer-copy {
@@ -1379,10 +1372,6 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.layer-detail.on .layer-name {
-  color: var(--ink);
 }
 
 .layer-source {
