@@ -10,7 +10,7 @@ from sqlalchemy import select
 
 from .config import BASE_DIR, get_settings
 from .db import Base, SessionLocal, engine
-from .routers import analysis, cameras, datasets, incidents, location, models, notifications, system
+from .routers import analysis, cameras, datasets, incidents, layers, location, models, notifications, system
 from .services.seed import seed_demo_data
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
@@ -47,7 +47,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for module in (location, cameras, incidents, datasets, models, system, notifications, analysis):
+for module in (location, cameras, incidents, datasets, models, system, notifications, analysis, layers):
     app.include_router(module.router)
 
 
@@ -71,6 +71,7 @@ def api_root() -> dict:
             "/api/models",
             "/api/system/health",
             "/api/notifications",
+            "/api/layers/environment",
         ],
     }
 
