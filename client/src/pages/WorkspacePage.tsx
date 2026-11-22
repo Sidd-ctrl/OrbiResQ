@@ -290,7 +290,7 @@ export default function WorkspacePage() {
                                 type="button"
                                 className={`sheet-layer${enabled ? ' on' : ''}`}
                                 onClick={() => intel.toggleLayer(layer.id)}
-                                disabled={layer.unavailable}
+                                disabled={Boolean(layer.unavailable)}
                                 role="switch"
                                 aria-checked={enabled}
                               >
