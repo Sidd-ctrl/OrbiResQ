@@ -239,6 +239,43 @@ export interface PaginatedIncidents {
   page_size: number
 }
 
+export interface EarthquakeEvent {
+  id: string
+  magnitude: number | null
+  place: string
+  latitude: number
+  longitude: number
+  depth_km: number | null
+  occurred_at: string
+  url: string | null
+}
+
+export interface PrecipitationPoint {
+  latitude: number
+  longitude: number
+  precipitation_mm: number
+  rain_mm: number
+  weather_code: number | null
+  observed_at: string | null
+}
+
+export interface EnvironmentSource {
+  id: string
+  label: string
+  attribution: string
+  status: 'live' | 'unavailable'
+  detail: string
+  count: number
+}
+
+export interface EnvironmentLayers {
+  generated_at: string
+  bounds: { min_lat: number; max_lat: number; min_lon: number; max_lon: number }
+  sources: EnvironmentSource[]
+  earthquakes: EarthquakeEvent[]
+  precipitation: PrecipitationPoint[]
+}
+
 export interface PaginatedNotifications {
   items: NotificationRecord[]
   total: number

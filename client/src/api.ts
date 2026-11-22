@@ -4,6 +4,7 @@ import type {
   Dataset,
   DetectorRuntime,
   DiscoveryResponse,
+  EnvironmentLayers,
   HealthResponse,
   Incident,
   IncidentSummary,
@@ -100,6 +101,8 @@ export const api = {
 
   models: () => request<ModelRecord[]>('/api/models'),
   runtimeModels: () => request<{ reachable: boolean; detail?: string; detectors: DetectorRuntime[] }>('/api/models/runtime'),
+
+  environment: () => request<EnvironmentLayers>('/api/layers/environment'),
 
   health: () => request<HealthResponse>('/api/system/health'),
   settings: () => request<SystemSettings>('/api/system/settings'),
