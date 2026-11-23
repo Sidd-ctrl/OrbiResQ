@@ -112,23 +112,45 @@ Tests:
 python3 -m pytest tests -q
 ```
 
-## Configuration
+## Configuration and API keys
 
-All configuration is environment-based; no credentials are committed and none are returned by the API.
+Every setting is an environment variable, loaded by `server/app/config.py`. No credential is committed to the repository and none is returned by the API.
+
+### Where to add a key
+
+- **Deployed on AppJet:** open **Settings → Environment variables**, add the name exactly as listed below with its value, save, then redeploy. Values are injected when the container starts, so a running app does not see a new key until it is rebuilt.
+- **Running locally:** copy `.env.example` to `.env` in the repository root and fill in the values. `.env` is git-ignored; `config.py` loads it automatically.
+
+After adding credentials, open the System page or call `GET /api/system/settings`: each camera provider and alert channel reports `configured: true` together with the `required_environment` names it still needs. Until then the adapter stays `not_configured` and alerts are written to the in-app log only.
+
+### Variables
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `PORT` | `3000` | API port |
 | `CV_PORT` | `8100` | Local CV service port |
 | `CV_SERVICE_URL` | `http://127.0.0.1:8100` | Where the API reaches the CV service |
-| `DATABASE_URL` | `sqlite:///<cwd>/data/orbi_resq.db` | SQLAlchemy URL; PostgreSQL works via `postgresql+pg8000://...` |
-| `DATA_DIR` | `./data` | Local dataset and media storage |
-| `SEED_DEMO_DATA` | `true` | Insert clearly marked demo cameras, incidents, models, dataset |
+| `DATABASE_URL` | `sqlite:///<repo>/data/orbi_resq.db` | SQLAlchemy URL; PostgreSQL works via `postgresql+pg8000://...` |
+| `DATA_DIR` | `./data` | Local dataset, media and archive storage |
+| `MEDIA_GATEWAY_URL` | – | Optional external gateway for RTSP→HLS conversion |
+| `HTTP_TIMEOUT_SECONDS` | `8` | Outbound timeout for discovery and validation |
+| `GEOCODE_USER_AGENT`, `GEOCODE_LANGUAGE` | app default, `en` | Nominatim identification and result language |
+| `DEFAULT_RADIUS_KM`, `MAX_RADIUS_KM` | `25`, `100` | Coverage radius bounds |
+| `MAX_DISCOVERY_RESULTS` | `250` | Cap per discovery run |
+| `ENABLE_OSM_DISCOVERY`, `OSM_OVERPASS_URL` | `true`, Overpass | OpenStreetMap surveillance provider |
+| `ENABLE_CALTRANS_DISCOVERY`, `CALTRANS_DISTRICT` | `true`, `03` | Caltrans CCTV provider |
+| `WINDY_API_KEY` | – | Windy Webcams API v3 key; the provider stays `not_configured` without it |
+| `CAMERA_DIRECTORY_URL` | – | URL of an operator-supplied JSON camera directory |
 | `STORAGE_BACKEND` | `local` | `local` or `s3` |
-| `S3_ENDPOINT_URL`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_REGION` | – | S3-compatible storage |
-| `NOMINATIM_USER_AGENT` | app default | Required by Nominatim's usage policy |
-| `CALTRANS_API_KEY`, `WINDY_API_KEY` | – | Optional provider credentials; adapters stay `not_configured` without them |
-| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SMTP_*`, `ALERT_WEBHOOK_URL` | – | Optional notification channels |
+| `S3_ENDPOINT_URL`, `S3_BUCKET`, `S3_ACCESS_KEY`, `S3_SECRET_KEY` | – | S3-compatible storage used when `STORAGE_BACKEND=s3` |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | – | Telegram alert delivery |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER`, `ALERT_SMS_TO` | – | Twilio SMS delivery |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM`, `ALERT_EMAIL_TO` | –, `587` | SMTP email delivery |
+| `PUSH_PROVIDER_KEY` | – | Reserved for push delivery; the channel reports as unconfigured |
+| `SEED_DEMO_DATA` | `true` | Insert clearly marked demo cameras, incidents, models and dataset |
+| `MAX_UPLOAD_MB` | `50` | Dataset upload limit |
+
+Keyless sources — OpenStreetMap Overpass, Caltrans CCTV, USGS earthquakes and Open-Meteo rainfall — work without credentials, which is why the map is populated out of the box.
 
 ## Roadmap
 
