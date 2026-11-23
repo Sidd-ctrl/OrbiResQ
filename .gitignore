@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+node_modules/
+
+data/test.db
+data/smoke.db
+data/dev_check.db
+
+.DS_Store
